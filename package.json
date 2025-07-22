@@ -1,0 +1,26 @@
+{
+  "name": "xrage-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend of X-Rage Scan Chrome Extension",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gbirrielg/xrage-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gbirrielg/xrage-api/issues"
+  },
+  "homepage": "https://github.com/gbirrielg/xrage-api#readme",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "openai": "^5.10.2"
+  }
+}
