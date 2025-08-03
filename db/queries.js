@@ -18,35 +18,65 @@ export class Database {
     });
   }
 
+
   async addUser(handle, report) {
     const client = await this.pool.connect();
+    const text = `INSERT INTO users 
+      (handle, scan_date, political, insult, threat, profanity, toxicity, report, risk_level) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+    const today = new Date().toISOString().split("T")[0];
+    const values = [
+      handle,
+      today,
+      report.political,
+      report.insult,
+      report.threat,
+      report.profanity,
+      report.toxicity,
+      report.overall_report,
+      report.risk_level,
+    ];
 
     try {
-      const text = `INSERT INTO users 
-      (handle, scan_date, political, insult, threat, profanity, toxicity, report, risk_level) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      `;
-      const today = new Date().toISOString().split("T")[0];
-      const values = [
-        handle,
-        today,
-        report.political,
-        report.insult,
-        report.threat,
-        report.profanity,
-        report.toxicity,
-        report.overall_report,
-        report.risk_level,
-      ];
-
-      const res = await client.query(text, values);
-      console.log(res)
+      await client.query(text, values);
+      console.log(`INSERT: ${handle} added to users`);
     } catch (err) {
       console.error("addUser() FAILED: ", err);
       throw err;
     }
   }
-}
 
-const db = new Database();
-db.addUser();
+
+  async addUserScan(handle) {
+    const client = await this.pool.connect();
+    const text = `INSERT INTO scans 
+      (handle) VALUES ($1)`;
+    const values = [handle];
+
+    try {
+      await client.query(text, values);
+      console.log(`INSERT: ${handle} added to scans`);
+    } catch (err) {
+      console.error("adduserScan() FAILED: ", err);
+      throw err;
+    }
+  }
+
+
+  async getUser(handle) {
+    const client = await this.pool.connect();
+    const text = `SELECT * FROM users
+      WHERE handle = ($1)`;
+    const values = [handle];
+
+    try {
+      const res = await client.query(text, values);
+      console.log(`GET: ${handle} was looked up`);
+      return res.rows[0];
+    } catch (err) {
+      console.error("getUser() FAILED: ", err);
+      throw err;
+    }
+  }
+
+}
