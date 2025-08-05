@@ -2,13 +2,6 @@ import dotenv from "dotenv";
 import { Pool } from "pg";
 dotenv.config();
 
-/*REQ FUNCS
-- Add user to users table
-- Add user to scans table
-- UPDATE user on user table
-- UPDATE user on scans table
-- QUERY user on user table (not req'ed for scans)
-*/
 
 export class Database {
   constructor() {
@@ -18,7 +11,7 @@ export class Database {
     });
   }
 
-
+  
   async addUser(handle, report) {
     const client = await this.pool.connect();
     const text = `INSERT INTO users 
@@ -42,7 +35,6 @@ export class Database {
       console.log(`INSERT: ${handle} added to users`);
     } catch (err) {
       console.error("addUser() FAILED: ", err);
-      throw err;
     }
   }
 
@@ -58,7 +50,52 @@ export class Database {
       console.log(`INSERT: ${handle} added to scans`);
     } catch (err) {
       console.error("adduserScan() FAILED: ", err);
-      throw err;
+    }
+  }
+
+
+  async updateUser(handle, report) {
+    const client = await this.pool.connect();
+    const text = `UPDATE users
+      SET scan_date = $1, political = $2, insult = $3, threat = $4
+      , profanity = $5, toxicity = $6, report = $7, risk_level = $8
+      WHERE handle = $9`;
+    const today = new Date().toISOString().split("T")[0];
+    const values = [
+      today,
+      report.political,
+      report.insult,
+      report.threat,
+      report.profanity,
+      report.toxicity,
+      report.overall_report,
+      report.risk_level,
+      handle,
+    ];
+
+    try {
+      await client.query(text, values);
+      console.log(`UPDATE: ${handle} has been updated on users`);
+    } catch (err) {
+      console.error("updateUser() FAILED: ", err);
+    }
+  }
+
+
+  async updateUserScan(handle, status) {
+    const client = await this.pool.connect();
+    const text = `UPDATE scans
+      SET passed_scans = passed_scans + $1, failed_scans = failed_scans + $2
+      , total = total + 1
+      WHERE handle = $3`;
+    const values = status ? [1, 0] : [0, 1]; // if true, then scan passed
+    values.push(handle);
+
+    try {
+      await client.query(text, values);
+      console.log(`UDPATE: ${handle} has been updated on scans`);
+    } catch (err) {
+      console.error("updateUserScan() FAILED: ", err);
     }
   }
 
@@ -71,11 +108,26 @@ export class Database {
 
     try {
       const res = await client.query(text, values);
-      console.log(`GET: ${handle} was looked up`);
+      console.log(`GET: ${handle} was looked up on users`);
       return res.rows[0];
     } catch (err) {
       console.error("getUser() FAILED: ", err);
-      throw err;
+    }
+  }
+
+
+  async getUserScan(handle) {
+    const client = await this.pool.connect();
+    const text = `SELECT * FROM scans
+      WHERE handle = ($1)`;
+    const values = [handle];
+
+    try {
+      const res = await client.query(text, values);
+      console.log(`GET: ${handle} was looked up on scans`);
+      return res.rows[0];
+    } catch (err) {
+      console.error("getUserScan() FAILED: ", err);
     }
   }
 
