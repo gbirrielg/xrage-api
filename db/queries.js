@@ -35,6 +35,7 @@ export class Database {
       console.log(`INSERT: ${handle} added to users`);
     } catch (err) {
       console.error("addUser() FAILED: ", err);
+      throw new Error(err);
     }
   }
 
@@ -50,6 +51,7 @@ export class Database {
       console.log(`INSERT: ${handle} added to scans`);
     } catch (err) {
       console.error("adduserScan() FAILED: ", err);
+      throw new Error(err);
     }
   }
 
@@ -78,6 +80,7 @@ export class Database {
       console.log(`UPDATE: ${handle} has been updated on users`);
     } catch (err) {
       console.error("updateUser() FAILED: ", err);
+      throw new Error(err);
     }
   }
 
@@ -96,6 +99,7 @@ export class Database {
       console.log(`UDPATE: ${handle} has been updated on scans`);
     } catch (err) {
       console.error("updateUserScan() FAILED: ", err);
+      throw new Error(err);
     }
   }
 
@@ -109,9 +113,10 @@ export class Database {
     try {
       const res = await client.query(text, values);
       console.log(`GET: ${handle} was looked up on users`);
-      return res.rows[0];
+      return res.rows[0] || null;
     } catch (err) {
       console.error("getUser() FAILED: ", err);
+      throw new Error(err);
     }
   }
 
@@ -125,9 +130,10 @@ export class Database {
     try {
       const res = await client.query(text, values);
       console.log(`GET: ${handle} was looked up on scans`);
-      return res.rows[0];
+      return res.rows[0] || null;
     } catch (err) {
       console.error("getUserScan() FAILED: ", err);
+      throw new Error(err);
     }
   }
 

@@ -9,6 +9,6 @@ export function callScraper(handle) {
     throw new Error(res.stderr);
   }
 
-  tweets = JSON.parse(res.stdout);
+  const tweets = JSON.parse(res.stdout);
   return tweets.slice(0, 25);
 }
