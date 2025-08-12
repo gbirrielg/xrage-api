@@ -15,7 +15,8 @@ const report = z.object({
   threat: z.number(),
   profanity: z.number(),
   toxicity: z.number(),
-  overall_report: z.string()
+  overall_report: z.string(),
+  risk_level: z.number()
 });
 
 
