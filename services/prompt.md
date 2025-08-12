@@ -12,5 +12,6 @@ You will read every tweet in the array, and generate an overall grade on a scale
 - threat
 - profanity
 - severe toxicity
+- overall risk level
 
 After the overall rating, generate an **overall report** summarizing the user in **256 characters or less**.
