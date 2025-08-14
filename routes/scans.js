@@ -12,7 +12,7 @@ router.route("/:handle")
   })
   .get(async (req, res) => {
     try {
-      const userReport = await db.getUser(req.handle)
+      const userReport = await db.getUserScan(req.handle);
       res.status(200).json(userReport);
     } catch (err) {
       console.error(err);
@@ -21,7 +21,7 @@ router.route("/:handle")
   })
   .post(async (req, res) => {
     try {
-      await db.addUser(req.handle, req.body.report);
+      await db.addUserScan(req.handle);
       res.sendStatus(200);
     } catch (err) {
       console.error(err);
@@ -30,7 +30,7 @@ router.route("/:handle")
   })
   .put(async (req, res) => {
     try {
-      await db.updateUser(req.handle, req.body.report);
+      await db.updateUserScan(req.handle, req.body.scanned);
       res.sendStatus(200);
     } catch (err) {
       console.error(err);
